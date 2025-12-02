@@ -10,7 +10,8 @@
 </head>
 
 <body>
-    <h3>Products page</h3>
+    <div id="app">
+        <h3>Products page</h3>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Add Product
@@ -25,18 +26,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" id="app" @submit.prevent="addProduct">
+                    <form method="POST"  @submit.prevent="addProduct">
                         <div class="mb-3">
                             <label for="name" class="form-label">Product Name</label>
-                            <input name="product_name" type="text" class="form-control" id="name" required />
+                            <input name="name" type="text" class="form-control" v-model="newProduct.name" id="name"
+                                required />
                         </div>
                         <div class="mb-3">
                             <label for="bp" class="form-label">Buying Price</label>
-                            <input name="buying_price" type="number" class="form-control" id="bp" required />
+                            <input name="buying_price" type="number" class="form-control" id="buying_price"
+                                v-model="newProduct.buying_price" required />
                         </div>
                         <div class="mb-3">
                             <label for="sp" class="form-label">Selling Price</label>
-                            <input name="selling_price" type="number" class="form-control" id="sp" required />
+                            <input name="selling_price" type="number" class="form-control" id="selling_price"
+                                v-model="newProduct.selling_price" required />
+                        </div>
+                        <div>
+                            <p v-model="message">{{message}}</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -50,8 +57,31 @@
             </div>
         </div>
     </div>
+    <div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product_Id</th>
+                    <th>Name</th>
+                    <th>Buying Price</th>
+                    <th>Selling Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="product in products" :key="product.id">
+                    <td>{{ product["id"]}}</td>
+                    <td>{{ product["name"] }}</td>
+                    <td>{{ product["buying_price"] }}</td>
+                    <td>{{ product["selling_price"] }}</td>
+                </tr>
+            </tbody>
+        </table>
 
 
+    </div>
+
+    </div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.7/vue.min.js"
         integrity="sha512-PhuYrdDBtBeUjY7KTmjRYFFadw8uXXdTmzZyhCHZewYsqZJ0pxFCwU528jRoil42LXMW3ksegQT5zdjkfiR1IA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -65,41 +95,57 @@
         integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
         crossorigin="anonymous"></script>
     <script>
-        new Vue({
-            el: '#app',
-            data: {
-                newProduct: {
-                    product_name: '',
-                    buying_price: '',
-                    selling_price: '',
-                },
-                products: [],
+       new Vue({
+    el: '#app',
+    data: {
+        newProduct: {
+            name: '',
+            buying_price: '',
+            selling_price: '',
+        },
+        products: [],
+        message: ''
+    },
+    methods: {
+        async addProduct() {
+            try {
+                const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
+                const response = await axios.post('http://127.0.0.1:5001/products', {
+                    name: this.newProduct.name,
+                    buying_price: this.newProduct.buying_price,
+                    selling_price: this.newProduct.selling_price
+                }, headers);
 
-                message: ''
-            },
-            methods: {
-                async addProduct() {
-                    try {
-                        console.log("Adding Product");
-                        const response = await axios.post('http://127.0.0.1:5001/products', {
-                            product_name: this.newProduct.product_name,
-                            buying_price: this.newProduct.buying_price,
-                            selling_price: this.newProduct.selling_price
-                        }, {
-                            headers: {
-                                'Authorization': `Bearer ${localStorage.getItem('token')}`
-                            }
-                        });
-                        alert("Product Added Successfully");
-                        this.message = "Product Added Successfully";
-                        window.location.reload();
-                    } catch (error) {
-                        console.error("There was an error!", error);
-                        this.message = "Failed to Add Product";
-                    }
-                }
+                alert("Product Added Successfully");
+                this.message = "Product Added Successfully";
+            } catch (error) {
+                console.error("There was an error!", error);
+                this.message = `Failed to Add Product ${error}`;
             }
-        });
+        },
+
+        async fetchProducts() {
+            try {
+                const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
+                const response = await axios.get('http://127.0.0.1:5001/products', headers);
+                console.log(response.data);
+                this.products = response.data;
+            } catch (error) {
+                console.error("There was an error fetching products!", error);
+            }
+        }
+    },
+
+    mounted() {
+        if (localStorage.getItem('token') !== null) {
+            this.fetchProducts();
+        } else {
+            alert("Please login to view products");
+            window.location.href = 'login.html';
+        }
+    }
+});
+
     </script>
 </body>
 
