@@ -1,11 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
+
 <body>
-    
+    <h3>Products page</h3>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add Product
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" id="app" @submit.prevent="addProduct">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Product Name</label>
+                            <input name="product_name" type="text" class="form-control" id="name" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="bp" class="form-label">Buying Price</label>
+                            <input name="buying_price" type="number" class="form-control" id="bp" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="sp" class="form-label">Selling Price</label>
+                            <input name="selling_price" type="number" class="form-control" id="sp" required />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Product</button>
+                        </div>
+                    </form>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.7/vue.min.js"
+        integrity="sha512-PhuYrdDBtBeUjY7KTmjRYFFadw8uXXdTmzZyhCHZewYsqZJ0pxFCwU528jRoil42LXMW3ksegQT5zdjkfiR1IA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.js"
+        integrity="sha512-+dJa1RvuE8/HFftifMtr7hqixdEkb/DizfXUZAA0pyZeVdNnyZyKy9RnIWi0JSWUznbCNbaQNn0E6nbtrdL+9g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+        integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
+        crossorigin="anonymous"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                newProduct: {
+                    product_name: '',
+                    buying_price: '',
+                    selling_price: '',
+                },
+                products: [],
+
+                message: ''
+            },
+            methods: {
+                async addProduct() {
+                    try {
+                        console.log("Adding Product");
+                        const response = await axios.post('http://127.0.0.1:5001/products', {
+                            product_name: this.newProduct.product_name,
+                            buying_price: this.newProduct.buying_price,
+                            selling_price: this.newProduct.selling_price
+                        }, {
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            }
+                        });
+                        alert("Product Added Successfully");
+                        this.message = "Product Added Successfully";
+                        window.location.reload();
+                    } catch (error) {
+                        console.error("There was an error!", error);
+                        this.message = "Failed to Add Product";
+                    }
+                }
+            }
+        });
+    </script>
 </body>
+
 </html>

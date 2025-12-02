@@ -10,9 +10,9 @@
 <body>
     <form id="app" @submit.prevent="loginUser" method="post">
         <label for="email">Email</label>
-        <input type="email" name="email" id="email" required><br>
+        <input type="email" name="email" id="email" v-model="email" required><br>
         <label for="Password">Password</label>
-        <input type="password" name="password" id="password" required><br>
+        <input type="password" name="password" id="password" v-model="password" required><br>
         <input type="submit" value="Login">
         <p v-model="message">{{message}}</p>
 
@@ -36,7 +36,7 @@
                     try {
                         console.log("Logging in User");
                         const response = await axios.post('http://127.0.0.1:5001/login', {
-                            email: this.username,
+                            email: this.email,
                             password: this.password
                         });
                         this.message = "Login Successful";
