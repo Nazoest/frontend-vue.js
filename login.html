@@ -1,11 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=S, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width" itial-scale="1.0">
     <title>Document</title>
 </head>
+
 <body>
-    
+    <form id="app" @submit.prevent="loginUser" method="post">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required><br>
+        <label for="Password">Password</label>
+        <input type="password" name="password" id="password" required><br>
+        <input type="submit" value="Login">
+        <p v-model="message">{{message}}</p>
+
+    </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.7/vue.min.js"
+        integrity="sha512-PhuYrdDBtBeUjY7KTmjRYFFadw8uXXdTmzZyhCHZewYsqZJ0pxFCwU528jRoil42LXMW3ksegQT5zdjkfiR1IA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.js"
+        integrity="sha512-+dJa1RvuE8/HFftifMtr7hqixdEkb/DizfXUZAA0pyZeVdNnyZyKy9RnIWi0JSWUznbCNbaQNn0E6nbtrdL+9g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                email: '',
+                password: '',
+                message: ''
+            },
+            methods: {
+                async loginUser() {
+                    try {
+                        console.log("Logging in User");
+                        const response = await axios.post('http://127.0.0.1:5001/login', {
+                            email: this.username,
+                            password: this.password
+                        });
+                        this.message = "Login Successful";
+                        localStorage.setItem('token', response.data.token);
+                        alert("User Logged In Successfully");
+                        window.location.href = 'products.html';
+                    } catch (error) {
+                        console.error("There was an error!", error);
+                        this.message = "Login Failed"
+                    }
+                }
+            }
+        });
+    </script>
+
 </body>
+
 </html>
