@@ -7,81 +7,134 @@
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+
 </head>
 
 <body>
-    <div id="app">
-        <h3>sales page</h3>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Add Sale
-        </button>
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div id="app" class="container mt-5 pt-5">
+        <div class="mb-5 ">
+            <nav class="navbar  navbar-expand-lg fixed-top mb-3">
+                <div class="container">
+                    <a class="navbar-brand" href="#">MyDuka</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/">Home</a>
+                            </li>
+
+                            <template v-if="isLoggedIn">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/products.html">Products</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/sales.html">Sales</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/purchases.html">Purchases</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/dashboard.html">Dashboard</a>
+                                </li>
+                                <li class="nav-item bg-info rounded-5">
+                                    <a class="nav-link" href="" @click="logout">Log out</a>
+                                </li>
+                            </template>
+                            <template v-else>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/login.html">Login</a>
+                                </li>
+                                <li class="nav-item bg-info rounded-5">
+                                    <a class="nav-link" href="/register.html">Get Started</a>
+                                </li>
+                            </template>
+
+                        </ul>
                     </div>
-                    <div class="modal-body">
-                        <form method="POST" @submit.prevent="addSale">
-
-                            <div>
-                                <select class="form-select" v-model.number="newSale.product_id" required>
-                                    <option disabled value="">Select a product</option>
-                                    <option v-for="product in products" :value="product.id" class="">
-                                        {{ product.name }}
-                                    </option>
-                                </select>
-
-                            </div>
-                            <div class="mb-3">
-                                <label for="sp" class="form-label">Quantity</label>
-                                <input name="quantity" type="number" class="form-control" id="quantity"
-                                    v-model="newSale.quantity" required />
-                            </div>
-                            <div>
-                                <p v-model="message">{{message}}</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add Sale</button>
-                            </div>
-                        </form>
-
-
-                    </div>
-
                 </div>
-            </div>
+            </nav>
+
         </div>
         <div>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Sale Id</th>
-                        <th>Product Id</th>
-                        <th>Quantity</th>
-                        <th>Created at</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="sale in sales" :key="sale.id">
-                        <td>{{ sale["id"]}}</td>
-                        <td>{{ sale["product_id"] }}</td>
-                        <td>{{ sale["quantity"] }}</td>
-                        <td>{{ sale["created_at"] }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Add Sale
+            </button>
 
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" @submit.prevent="addSale">
+
+                                <div>
+                                    <select class="form-select" v-model.number="newSale.product_id" required>
+                                        <option disabled value="">Select a product</option>
+                                        <option v-for="product in products" :value="product.id" class="">
+                                            {{ product.name }}
+                                        </option>
+                                    </select>
+
+                                </div>
+                                <div class="mb-3">
+                                    <label for="sp" class="form-label">Quantity</label>
+                                    <input name="quantity" type="number" class="form-control" id="quantity"
+                                        v-model="newSale.quantity" required />
+                                </div>
+                                <div>
+                                    <p v-model="message">{{message}}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Add Sale</button>
+                                </div>
+                            </form>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div>
+                <table id="salesTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Sale Id</th>
+                            <th>Product Id</th>
+                            <th>Quantity</th>
+                            <th>Created at</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="sale in sales" :key="sale.id">
+                            <td>{{ sale["id"]}}</td>
+                            <td>{{ sale["product_id"] }}</td>
+                            <td>{{ sale["quantity"] }}</td>
+                            <td>{{ sale["created_at"] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
 
         </div>
-
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.7/vue.min.js"
         integrity="sha512-PhuYrdDBtBeUjY7KTmjRYFFadw8uXXdTmzZyhCHZewYsqZJ0pxFCwU528jRoil42LXMW3ksegQT5zdjkfiR1IA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -94,19 +147,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
         integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
     <script>
         new Vue({
             el: '#app',
             data: {
+                isLoggedIn: false,
                 newSale: {
                     product_id: '',
                     quantity: '',
                 },
                 sales: [],
                 products: [],
+                table: null,
                 message: ''
             },
             methods: {
+                async logout() {
+                    localStorage.removeItem("token");
+                    window.location.reload();
+                },
                 async addSale() {
                     try {
                         console.log((this.newSale));
@@ -118,6 +178,7 @@
 
                         alert("Sale Added Successfully");
                         this.message = "Sale Added Successfully";
+                        await this.fetchSales();
                     } catch (error) {
                         console.error("There was an error!", error);
                         this.message = `Failed to Add Sale ${error}`;
@@ -141,6 +202,13 @@
                         const response = await axios.get('http://127.0.0.1:5001/sales', headers);
                         //console.log(response.data);
                         this.sales = response.data;
+                        this.$nextTick(() => {
+                            if (this.table) {
+                                this.table.destroy();
+                            }
+                            this.table = new DataTable('#salesTable');
+                        });
+
                     } catch (error) {
                         console.error("There was an error fetching products!", error);
                     }
@@ -149,6 +217,7 @@
 
 
             mounted() {
+                this.isLoggedIn = localStorage.getItem('token') !== null;
                 if (localStorage.getItem('token') !== null) {
                     this.fetchSales();
                     this.fetchProducts();
