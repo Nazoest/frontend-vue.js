@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-        <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" class="container-fluid p-0">
         <div class="mb-5 ">
-            <nav class="navbar  navbar-expand-lg fixed-top mb-3">
+            <nav class="navbar navbar-expand-lg fixed-top mb-3 navbar-dark bg-dark shadow-sm">
                 <div class="container">
                     <a class="navbar-brand" href="#">MyDuka</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -23,12 +23,12 @@
                     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link active" href="/">Home</a>
+                                <a class="nav-link " href="/home.html">Home</a>
                             </li>
 
                             <template v-if="isLoggedIn">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/products.html">Products</a>
+                                    <a class="nav-link active" href="/products.html">Products</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="/sales.html">Sales</a>
@@ -58,20 +58,30 @@
             </nav>
 
         </div>
+        <section class="container mt-5">
+            <div class="shadow-sm p-4">
+                <h3 class="mt-5">Products Page</h3>
+                <p class="p-4 mb-3">This page displays product information </p>
+            </div>
+        </section>
+
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Add Product
-        </button>
+        <div class="container my-4 text-center">
+            <button type="button" class="btn bg-dark text-white" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                + Add Product
+            </button>
+
+        </div>
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
+                <div class="modal-content shadow-sm border-0">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body px-4">
                         <form method="POST" @submit.prevent="addProduct">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Product Name</label>
@@ -124,9 +134,46 @@
             </table>
 
         </div>
+        <footer class="bg-dark text-white mt-5 pt-4 pb-3 position-relative bottom-0 w-100">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        <h5 class="fw-bold">MyDuka</h5>
+                        <p class="small">
+                            Simple and fast inventory & sales management system.
+                        </p>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <h5 class="fw-bold">Quick Links</h5>
+                        <ul class="list-unstyled small">
+                            <li><a href="/" class="text-white text-decoration-none">Home</a></li>
+                            <li><a href="/products.html" class="text-white text-decoration-none">Products</a></li>
+                            <li><a href="/sales.html" class="text-white text-decoration-none">Sales</a></li>
+                            <li><a href="/purchases.html" class="text-white text-decoration-none">Purchases</a></li>
+                            <li><a href="/dashboard.html" class="text-white text-decoration-none">Dashboard</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <h5 class="fw-bold">Contact</h5>
+                        <p class="small mb-1"><i class="bi bi-envelope"></i> info@myduka.com</p>
+                        <p class="small mb-1"><i class="bi bi-phone"></i> +254 700 000 000</p>
+                        <p class="small"><i class="bi bi-geo-alt"></i> Nairobi, Kenya</p>
+                    </div>
+
+                </div>
+
+                <div class="text-center small mt-3 pt-3 border-top border-light">
+                    © 2025 MyDuka Inventory App — All Rights Reserved
+                </div>
+            </div>
+        </footer>
+
 
     </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.7/vue.min.js"
@@ -154,7 +201,8 @@
                 products: [],
                 message: ''
             },
-            methods: { async logout() {
+            methods: {
+                async logout() {
                     localStorage.removeItem("token");
                     window.location.reload();
                 },
@@ -169,7 +217,16 @@
 
                         alert("Product Added Successfully");
                         this.message = "Product Added Successfully";
+                        this.fetchProducts();
+
+
                     } catch (error) {
+                        if (error.response && error.response.status === 409) {
+                            alert("Product already exists");
+                            this.message = "💀Product name already exists";
+                            return;
+                        }
+
                         console.error("There was an error!", error);
                         this.message = `Failed to Add Product ${error}`;
                     }
@@ -177,6 +234,12 @@
 
                 async fetchProducts() {
                     try {
+                        if (localStorage.getItem('token') === null) {
+                            alert("Please login to view products");
+                            window.location.href = 'login.html';
+                            return;
+                        }
+
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
                         const response = await axios.get('http://127.0.0.1:5001/products', headers);
                         console.log(response.data);
@@ -184,12 +247,21 @@
 
                         this.$nextTick(() => {
                             if (this.table) {
-                                this.table.destroy();
+                                this.table.clear();                 // remove old rows
+                                this.table.rows.add(this.products); // add new rows
+                            } else {
+                                // first time table is created
+                                this.table = new DataTable('#productsTable');
                             }
-                            this.table = new DataTable('#productsTable');
                         });
 
                     } catch (error) {
+                        if (error.response && error.response.status === 401) {
+                            alert("Unauthorized! Please login again.");
+                            window.location.href = 'login.html';
+                            return;
+                        }
+                        this.message = `Error fetching products: ${error}`;
                         console.error("There was an error fetching products!", error);
                     }
                 }

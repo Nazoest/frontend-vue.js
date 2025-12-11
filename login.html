@@ -12,18 +12,21 @@
 
 <body>
     <form id="app" @submit.prevent="loginUser" method="post">
-        <div class="mb-3">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" v-model="email" required><br>
-        </div>
-        <div class="mb-3">
-            <label for="Password">Password</label>
-            <input type="password" name="password" id="password" v-model="password" required><br>
-        </div>
+        <div class="p-4 w-75 mt-5">
+            <div class="mb-3">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" v-model="email" required><br>
+            </div>
+            <div class="mb-3">
+                <label for="Password">Password</label>
+                <input type="password" name="password" id="password" v-model="password" required><br>
+            </div>
+            <div>
+                <input type="submit" value="Login" class="btn btn-primary">
 
-        <input type="submit" value="Login">
-        <p v-model="message">{{message}}</p>
-
+            </div>
+            <p v-model="message">{{message}}</p>
+        </div>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

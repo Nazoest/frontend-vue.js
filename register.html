@@ -12,21 +12,24 @@
 
 <body>
     <form method="post" id="app" @submit.prevent="registerUser">
+            <div class="p-4 w-75 mt-5">
         <div class="mb-3">
-            <label for="Username">Username</label>
+            <label for="Username">Username:</label>
             <input type="text" name="" id="username" v-model="username" required><br>
         </div>
         <div class="mb-3">
-            <label for="Email">Email</label>
+            <label for="Email">Email:</label>
             <input type="email" name="" id="email" v-model="email" required><br>
         </div>
         <div class="mb-3">
-            <label for="Password">Password</label>
+            <label for="Password">Password:</label>
             <input type="password" name="" id="password" v-model='password' required><br>
         </div>
-
-        <input type="submit" value="Register">
+        <div class="mb-3">
+            <input type="submit" value="Register" class="btn btn-primary">
+        </div>
         <p v-model="message">{{message}}</p>
+            </div>
     </form>
 
 </body>
@@ -66,6 +69,7 @@
                     });
                     alert("User Registered Successfully");
                     this.message = "Registration Successful";
+                    window.location.href = 'login.html';
                 } catch (error) {
                     console.error("There was an error!", error);
                     this.message = "Registration Failed"

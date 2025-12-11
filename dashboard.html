@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+</head>
+
+<body>
+
+    <div class="mb-5 ">
+        <nav class="navbar navbar-expand-lg fixed-top mb-3 navbar-dark bg-dark shadow-sm">
+            <div class="container">
+                <a class="navbar-brand" href="#">MyDuka</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/home.html">Home</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/products.html">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/sales.html">Sales</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/purchases.html">Purchases</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login.html">Login</a>
+                        </li>
+                        <li class="nav-item bg-info rounded-5">
+                            <a class="nav-link" href="/register.html">Get Started</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+    </div>
+
+
+
+    <div id="app" class="container my-5">
+        <canvas id="myChart"></canvas>
+    </div>
+
+
+
+
+
+    <!-- Footer Section -->
+    <footer class="bg-dark text-white mt-5 pt-4 pb-3 position-relative bottom-0 w-100">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold">MyDuka</h5>
+                    <p class="small">
+                        Simple and fast inventory & sales management system.
+                    </p>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold">Quick Links</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="/" class="text-white text-decoration-none">Home</a></li>
+                        <li><a href="/products.html" class="text-white text-decoration-none">Products</a></li>
+                        <li><a href="/sales.html" class="text-white text-decoration-none">Sales</a></li>
+                        <li><a href="/purchases.html" class="text-white text-decoration-none">Purchases</a></li>
+                        <li><a href="/dashboard.html" class="text-white text-decoration-none">Dashboard</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold">Contact</h5>
+                    <p class="small mb-1"><i class="bi bi-envelope"></i> info@myduka.com</p>
+                    <p class="small mb-1"><i class="bi bi-phone"></i> +254 700 000 000</p>
+                    <p class="small"><i class="bi bi-geo-alt"></i> Nairobi, Kenya</p>
+                </div>
+
+            </div>
+
+            <div class="text-center small mt-3 pt-3 border-top border-light">
+                © 2025 MyDuka Inventory App — All Rights Reserved
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.7/vue.min.js"
+        integrity="sha512-PhuYrdDBtBeUjY7KTmjRYFFadw8uXXdTmzZyhCHZewYsqZJ0pxFCwU528jRoil42LXMW3ksegQT5zdjkfiR1IA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.js"
+        integrity="sha512-+dJa1RvuE8/HFftifMtr7hqixdEkb/DizfXUZAA0pyZeVdNnyZyKy9RnIWi0JSWUznbCNbaQNn0E6nbtrdL+9g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+        </script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                data: [],
+                labels: [],
+            },
+            methods: {
+                async fetchData() {
+                    try {
+                        if (localStorage.getItem('token') === null) {
+                            alert("Please login to view dashboard");
+                            window.location.href = 'login.html';
+                            return;
+                        }
+                        const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
+
+
+
+                        const prods = await axios.get("http://127.0.0.1:5001/dashboard", headers);
+                        this.data = prods.data.data;
+                        this.labels = prods.data.labels;
+
+                        const ctx = document.getElementById('myChart');
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: this.labels,
+                                datasets: [{
+                                    label: 'Remaining Stock Quantity',
+                                    data: this.data,
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error fetching dashboard data:', error);
+                    }
+                }
+            }, mounted() {
+                this.fetchData();
+            }
+        });
+
+    </script>
+
+
+
+
+
+</body>
+
+</html>
