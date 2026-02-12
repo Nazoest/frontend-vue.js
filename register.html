@@ -4,79 +4,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>MyDuka - Register</title>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 
-<body>
-    <form method="post" id="app" @submit.prevent="registerUser">
-            <div class="p-4 w-75 mt-5">
-        <div class="mb-3">
-            <label for="Username">Username:</label>
-            <input type="text" name="" id="username" v-model="username" required><br>
-        </div>
-        <div class="mb-3">
-            <label for="Email">Email:</label>
-            <input type="email" name="" id="email" v-model="email" required><br>
-        </div>
-        <div class="mb-3">
-            <label for="Password">Password:</label>
-            <input type="password" name="" id="password" v-model='password' required><br>
-        </div>
-        <div class="mb-3">
-            <input type="submit" value="Register" class="btn btn-primary">
-        </div>
-        <p v-model="message">{{message}}</p>
+<body class="bg-light">
+
+    <div id="app" class="container d-flex justify-content-center align-items-center vh-100">
+
+        <div class="card shadow-lg border-0 rounded-4 p-4" style="width: 100%; max-width: 420px;">
+
+            <!-- Title -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-dark">MyDuka</h2>
+                <p class="text-muted small">Create your account</p>
             </div>
-    </form>
+
+            <form @submit.prevent="registerUser">
+
+                <!-- Username -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <input type="text"
+                            class="form-control"
+                            placeholder="Enter username"
+                            v-model="username"
+                            required>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input type="email"
+                            class="form-control"
+                            placeholder="Enter your email"
+                            v-model="email"
+                            required>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password"
+                            class="form-control"
+                            placeholder="Create password"
+                            v-model="password"
+                            required>
+                    </div>
+                </div>
+
+                <!-- Register Button -->
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-dark rounded-3">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Register
+                    </button>
+                </div>
+
+                <!-- Alert -->
+                <div v-if="message"
+                    :class="messageType === 'success' ? 
+                    'alert alert-success text-center py-2' : 
+                    'alert alert-danger text-center py-2'">
+                    {{ message }}
+                </div>
+
+                <!-- Login Link -->
+                <div class="text-center mt-3">
+                    <small>
+                        Already have an account?
+                        <a href="login.html" class="text-decoration-none fw-semibold">
+                            Login
+                        </a>
+                    </small>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Vue -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.7/vue.min.js"></script>
+
+    <!-- Axios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                username: '',
+                email: '',
+                password: '',
+                message: '',
+                messageType: ''
+            },
+            methods: {
+                async registerUser() {
+
+                    if (!this.username || !this.email || !this.password) {
+                        this.message = "All fields are required"
+                        this.messageType = "error"
+                        return
+                    }
+
+                    try {
+                        const response = await axios.post(
+                            'http://127.0.0.1:8000/register',
+                            {
+                                username: this.fullname,
+                                email: this.email,
+                                password: this.password
+                            }
+                        )
+
+                        this.message = "Registration successful! Redirecting..."
+                        this.messageType = "success"
+
+                        setTimeout(() => {
+                            window.location.href = 'login.html'
+                        }, 1500)
+
+                    } catch (error) {
+                        console.error(error)
+                        this.message = "Registration failed. Please try again."
+                        this.messageType = "error"
+                    }
+                }
+            }
+        })
+    </script>
 
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.7/vue.min.js"
-    integrity="sha512-PhuYrdDBtBeUjY7KTmjRYFFadw8uXXdTmzZyhCHZewYsqZJ0pxFCwU528jRoil42LXMW3ksegQT5zdjkfiR1IA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.js"
-    integrity="sha512-+dJa1RvuE8/HFftifMtr7hqixdEkb/DizfXUZAA0pyZeVdNnyZyKy9RnIWi0JSWUznbCNbaQNn0E6nbtrdL+9g=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-    crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
-    integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
-    crossorigin="anonymous"></script>
-
-<script>
-    new Vue({
-        el: '#app',
-        data: {
-            username: '',
-            email: '',
-            password: '',
-            message: ''
-        },
-        methods: {
-            async registerUser() {
-                if (this.username === '' && this.email === '' && this.password === '') {
-                    alert("All fields are required");
-                    this.message = "All fields are required"
-                } try {
-                    console.log("Registering User");
-                    const response = await axios.post('http://127.0.0.1:5001/api/register', {
-                        username: this.username,
-                        email: this.email,
-                        password: this.password
-                    });
-                    alert("User Registered Successfully");
-                    this.message = "Registration Successful";
-                    window.location.href = 'login.html';
-                } catch (error) {
-                    console.error("There was an error!", error);
-                    this.message = "Registration Failed"
-                }
-            },
-        }
-    });
-</script>
 
 </html>

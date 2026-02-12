@@ -132,9 +132,13 @@
 
 
 
-                        const prods = await axios.get("http://127.0.0.1:5001/dashboard", headers);
-                        this.data = prods.data.data;
-                        this.labels = prods.data.labels;
+                        const remainingstock = await axios.get("http://127.0.0.1:8000/dashboard/rspp", headers);
+                        console.log(remainingstock.data);
+                        const dashboardData = remainingstock.data;
+
+                        this.labels = dashboardData.map(item => item.product_name);
+                        this.data = dashboardData.map(item => item.remaining_stock);
+
 
                         const ctx = document.getElementById('myChart');
 

@@ -4,20 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sales - MyDuka</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.5/css/dataTables.dataTables.css" />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div id="app" class="container mt-5 pt-5">
-        <div class="mb-5 ">
+    <div id="app" class="p-0">
+        <div class="mb-5">
             <nav class="navbar navbar-expand-lg fixed-top mb-3 navbar-dark bg-dark shadow-sm">
                 <div class="container">
-                    <a class="navbar-brand" href="#">MyDuka</a>
+                    <a class="navbar-brand fw-bold" href="#">
+                        <i class="bi bi-shop"></i> MyDuka
+                    </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -25,24 +32,28 @@
                     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="/home.html">Home</a>
+                                <a class="nav-link" href="/home.html"><i class="bi bi-house"></i> Home</a>
                             </li>
-
                             <template v-if="isLoggedIn">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/products.html">Products</a>
+                                    <a class="nav-link" href="/products.html"><i class="bi bi-box-seam"></i>
+                                        Products</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link active" href="/sales.html">Sales</a>
+                                    <a class="nav-link active" href="/sales.html"><i class="bi bi-cart-check"></i>
+                                        Sales</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/purchases.html">Purchases</a>
+                                    <a class="nav-link" href="purchases.html"><i class="bi bi-bag-plus"></i>
+                                        Purchases</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/dashboard.html">Dashboard</a>
+                                    <a class="nav-link" href="/dashboard.html"><i class="bi bi-speedometer2"></i>
+                                        Dashboard</a>
                                 </li>
                                 <li class="nav-item bg-info rounded-5">
-                                    <a class="nav-link" href="" @click="logout">Log out</a>
+                                    <a class="nav-link" href="" @click="logout"><i class="bi bi-box-arrow-right"></i>
+                                        Log out</a>
                                 </li>
                             </template>
                             <template v-else>
@@ -53,135 +64,239 @@
                                     <a class="nav-link" href="/register.html">Get Started</a>
                                 </li>
                             </template>
-
                         </ul>
                     </div>
                 </div>
             </nav>
-
         </div>
-                <section class="container mt-5">
-            <div class="shadow-sm p-4">
-                <h3 class="mt-5">Sales Page</h3>
-                <p class="p-4 mb-3">This page displays sales information </p>
-            </div>
-        </section>
 
-        <div>
-            <div class="container my-4 text-center">
-                            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-dark text-white" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                + Add Sale
-            </button>
-
-            </div>
-
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form method="POST" @submit.prevent="addSale">
-
-                                <div>
-                                    <select class="form-select" v-model.number="newSale.product_id" required>
-                                        <option disabled value="">Select a product</option>
-                                        <option v-for="product in products" :value="product.id" class="">
-                                            {{ product.name }}
-                                        </option>
-                                    </select>
-
-                                </div>
-                                <div class="mb-3">
-                                    <label for="sp" class="form-label">Quantity</label>
-                                    <input name="quantity" type="number" class="form-control" id="quantity"
-                                        v-model="newSale.quantity" required />
-                                </div>
-                                <div>
-                                    <p v-model="message">{{message}}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Add Sale</button>
-                                </div>
-                            </form>
-
-
-                        </div>
-
+        <!-- Hero Section -->
+        <section class="container mt-5">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body text-center py-5">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="bi bi-cart-check"></i> Sales Management
+                    </h1>
+                    <p class="lead mb-4">Manage your sales efficiently and track remaining stock</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <span class="badge bg-white text-dark fs-6 py-2 px-3"><i
+                                class="bi bi-check-circle-fill text-success"></i> Real-time Updates</span>
+                        <span class="badge bg-white text-dark fs-6 py-2 px-3"><i
+                                class="bi bi-graph-up-arrow text-primary"></i> Analytics Ready</span>
+                        <span class="badge bg-white text-dark fs-6 py-2 px-3"><i
+                                class="bi bi-shield-check text-info"></i> Secure Storage</span>
                     </div>
                 </div>
             </div>
-            <div>
-                <table id="salesTable" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Sale Id</th>
-                            <th>Product Id</th>
-                            <th>Quantity</th>
-                            <th>Created at</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="sale in sales" :key="sale.id">
-                            <td>{{ sale["id"]}}</td>
-                            <td>{{ sale["product_id"] }}</td>
-                            <td>{{ sale["quantity"] }}</td>
-                            <td>{{ sale["created_at"] }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+        </section>
 
-
+        <!-- Statistics Cards -->
+        <section class="container my-4">
+            <div class="row g-3">
+                <div class="col-md-3 col-sm-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 rounded-3 mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-cart-check-fill fs-3 text-primary"></i>
+                            </div>
+                            <h3 class="mb-1">{{ sales.length }}</h3>
+                            <p class="text-muted mb-0">Total Sales</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 rounded-3 mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-box-seam fs-3 text-success"></i>
+                            </div>
+                            <h3 class="mb-1">{{ calculateTotalQuantity() }}</h3>
+                            <p class="text-muted mb-0">Units Sold</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-center bg-info bg-opacity-10 rounded-3 mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-currency-dollar fs-3 text-info"></i>
+                            </div>
+                            <h3 class="mb-1">{{ calculateTotalRevenue() }}</h3>
+                            <p class="text-muted mb-0">Total Revenue</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-center bg-warning bg-opacity-10 rounded-3 mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-graph-up fs-3 text-warning"></i>
+                            </div>
+                            <h3 class="mb-1">{{ getMostSoldProduct() }}</h3>
+                            <p class="text-muted mb-0">Top Product</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-                    <footer class="bg-dark text-white mt-5 pt-4 pb-3  bottom-0 w-100">
-    <div class="container">
-        <div class="row">
+        </section>
 
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold">MyDuka</h5>
-                <p class="small">
-                    Simple and fast inventory & sales management system.
-                </p>
+        <!-- Quick Actions -->
+        <div class="container my-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="mb-3"><i class="bi bi-lightning-charge-fill text-warning"></i> Quick Actions</h5>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <i class="bi bi-plus-circle"></i> Add Sale
+                                </button>
+                                <button class="btn btn-outline-success" onclick="window.print()">
+                                    <i class="bi bi-printer"></i> Print List
+                                </button>
+                                <button class="btn btn-outline-secondary" @click="fetchSales">
+                                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end mt-3 mt-md-0">
+                            <div class="alert alert-info mb-0" role="alert">
+                                <i class="bi bi-info-circle-fill"></i> Last updated: {{ lastUpdated }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold">Quick Links</h5>
-                <ul class="list-unstyled small">
-                    <li><a href="/" class="text-white text-decoration-none">Home</a></li>
-                    <li><a href="/products.html" class="text-white text-decoration-none">Products</a></li>
-                    <li><a href="/sales.html" class="text-white text-decoration-none">Sales</a></li>
-                    <li><a href="/purchases.html" class="text-white text-decoration-none">Purchases</a></li>
-                    <li><a href="/dashboard.html" class="text-white text-decoration-none">Dashboard</a></li>
-                </ul>
-            </div>
-
-            <div class="col-md-4 mb-3">
-                <h5 class="fw-bold">Contact</h5>
-                <p class="small mb-1"><i class="bi bi-envelope"></i> info@myduka.com</p>
-                <p class="small mb-1"><i class="bi bi-phone"></i> +254 700 000 000</p>
-                <p class="small"><i class="bi bi-geo-alt"></i> Nairobi, Kenya</p>
-            </div>
-
         </div>
 
-        <div class="text-center small mt-3 pt-3 border-top border-light">
-            © 2025 MyDuka Inventory App — All Rights Reserved
+        <!-- Add Sale Button -->
+        <div class="container my-4 text-center">
+            <button type="button" class="btn btn-primary btn-lg rounded-pill shadow" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
+                <i class="bi bi-plus-circle"></i> Add New Sale
+            </button>
         </div>
-    </div>
-</footer>
 
-
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content shadow border-0 rounded-4">
+                    <div class="modal-header bg-primary text-white">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">
+                            <i class="bi bi-plus-square"></i> Add New Sale
+                        </h1>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body px-4">
+                        <form method="POST" @submit.prevent="addSale">
+                            <div class="mb-3">
+                                <label for="product" class="form-label fw-bold">
+                                    <i class="bi bi-box-seam"></i> Select Product
+                                </label>
+                                <select class="form-select" v-model.number="newSale.product_id" required>
+                                    <option disabled value="">Select a product</option>
+                                    <option v-for="product in products" :value="product.id">
+                                        {{ product.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label fw-bold">
+                                    <i class="bi bi-123"></i> Quantity
+                                </label>
+                                <input name="quantity" type="number" class="form-control" id="quantity"
+                                    v-model="newSale.quantity" placeholder="Enter quantity" required />
+                            </div>
+                            <div v-if="message" class="alert" :class="message.includes('Successfully') ? 'alert-success' : 'alert-danger'">
+                                {{ message }}
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="bi bi-x-circle"></i> Close
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Add Sale
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- Sales Table -->
+        <div class="container my-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="bi bi-table"></i> Sales Records</h4>
+                        <span class="badge bg-primary rounded-pill fs-6">{{ sales.length }} transactions</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="salesTable" class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th><i class="bi bi-hash"></i> Sale ID</th>
+                                    <th><i class="bi bi-box-seam"></i> Product</th>
+                                    <th><i class="bi bi-123"></i> Quantity</th>
+                                    <th><i class="bi bi-currency-dollar"></i> Revenue</th>
+                                    <th><i class="bi bi-calendar"></i> Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="sale in sales" :key="sale.id">
+                                    <td><strong>{{ sale["id"] }}</strong></td>
+                                    <td>{{ getProductName(sale["product_id"]) }}</td>
+                                    <td><span class="badge bg-info">{{ sale["quantity"] }}</span></td>
+                                    <td>KES {{ calculateSaleRevenue(sale) }}</td>
+                                    <td>{{ formatDate(sale["created_at"]) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-dark text-white mt-5 pt-4 pb-3 w-100">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <h5 class="fw-bold"><i class="bi bi-shop"></i> MyDuka</h5>
+                        <p class="small">
+                            Simple and fast inventory & sales management system.
+                        </p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5 class="fw-bold">Quick Links</h5>
+                        <ul class="list-unstyled small">
+                            <li class="mb-2"><a href="/" class="text-white text-decoration-none"><i class="bi bi-chevron-right"></i> Home</a></li>
+                            <li class="mb-2"><a href="/products.html" class="text-white text-decoration-none"><i class="bi bi-chevron-right"></i> Products</a></li>
+                            <li class="mb-2"><a href="/sales.html" class="text-white text-decoration-none"><i class="bi bi-chevron-right"></i> Sales</a></li>
+                            <li class="mb-2"><a href="/purchases.html" class="text-white text-decoration-none"><i class="bi bi-chevron-right"></i> Purchases</a></li>
+                            <li class="mb-2"><a href="/dashboard.html" class="text-white text-decoration-none"><i class="bi bi-chevron-right"></i> Dashboard</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5 class="fw-bold">Contact</h5>
+                        <p class="small mb-1"><i class="bi bi-envelope"></i> info@myduka.com</p>
+                        <p class="small mb-1"><i class="bi bi-phone"></i> +254 700 000 000</p>
+                        <p class="small"><i class="bi bi-geo-alt"></i> Nairobi, Kenya</p>
+                    </div>
+                </div>
+                <div class="text-center small mt-3 pt-3 border-top border-light">
+                    © 2025 MyDuka Inventory App — All Rights Reserved
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.7/vue.min.js"
         integrity="sha512-PhuYrdDBtBeUjY7KTmjRYFFadw8uXXdTmzZyhCHZewYsqZJ0pxFCwU528jRoil42LXMW3ksegQT5zdjkfiR1IA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -194,7 +309,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
         integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
     <script>
         new Vue({
             el: '#app',
@@ -207,7 +321,8 @@
                 sales: [],
                 products: [],
                 table: null,
-                message: ''
+                message: '',
+                lastUpdated: new Date().toLocaleTimeString()
             },
             methods: {
                 async logout() {
@@ -216,9 +331,8 @@
                 },
                 async addSale() {
                     try {
-                        console.log((this.newSale));
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.post('http://127.0.0.1:5001/sales', {
+                        const response = await axios.post('http://127.0.0.1:8000/sales', {
                             product_id: this.newSale.product_id,
                             quantity: this.newSale.quantity
                         }, headers);
@@ -226,6 +340,7 @@
                         alert("Sale Added Successfully");
                         this.message = "Sale Added Successfully";
                         await this.fetchSales();
+                        this.newSale = { product_id: '', quantity: '' };
                     } catch (error) {
                         console.error("There was an error!", error);
                         this.message = `Failed to Add Sale ${error}`;
@@ -234,35 +349,80 @@
                 async fetchProducts() {
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.get('http://127.0.0.1:5001/products', headers);
-                        //console.log(response.data);
+                        const response = await axios.get('http://127.0.0.1:8000/products', headers);
                         this.products = response.data;
                     } catch (error) {
+                        if (error.response && error.response.status === 401) {
+                            alert("Unauthorized! Please login again.");
+                            window.location.href = 'login.html';
+                            return;
+                        }
                         console.error("There was an error fetching products!", error);
                     }
-
                 },
-
                 async fetchSales() {
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.get('http://127.0.0.1:5001/sales', headers);
-                        //console.log(response.data);
+                        const response = await axios.get('http://127.0.0.1:8000/sales', headers);
                         this.sales = response.data;
+                        this.lastUpdated = new Date().toLocaleTimeString();
+                        
                         this.$nextTick(() => {
                             if (this.table) {
                                 this.table.destroy();
                             }
                             this.table = new DataTable('#salesTable');
                         });
-
                     } catch (error) {
-                        console.error("There was an error fetching products!", error);
+                        console.error("There was an error fetching sales!", error);
                     }
+                },
+                getProductName(productId) {
+                    const product = this.products.find(p => p.id === productId);
+                    return product ? product.name : `Product #${productId}`;
+                },
+                calculateSaleRevenue(sale) {
+                    const product = this.products.find(p => p.id === sale.product_id);
+                    if (product) {
+                        return (parseFloat(product.selling_price) * sale.quantity).toFixed(2);
+                    }
+                    return '0.00';
+                },
+                calculateTotalQuantity() {
+                    return this.sales.reduce((sum, sale) => sum + parseInt(sale.quantity || 0), 0);
+                },
+                calculateTotalRevenue() {
+                    const total = this.sales.reduce((sum, sale) => {
+                        const product = this.products.find(p => p.id === sale.product_id);
+                        if (product) {
+                            return sum + (parseFloat(product.selling_price) * sale.quantity);
+                        }
+                        return sum;
+                    }, 0);
+                    return 'KES ' + total.toFixed(2);
+                },
+                getMostSoldProduct() {
+                    if (this.sales.length === 0) return 'N/A';
+                    
+                    const productSales = {};
+                    this.sales.forEach(sale => {
+                        if (!productSales[sale.product_id]) {
+                            productSales[sale.product_id] = 0;
+                        }
+                        productSales[sale.product_id] += parseInt(sale.quantity);
+                    });
+                    
+                    const topProductId = Object.keys(productSales).reduce((a, b) => 
+                        productSales[a] > productSales[b] ? a : b
+                    );
+                    
+                    return this.getProductName(parseInt(topProductId));
+                },
+                formatDate(dateString) {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
                 }
             },
-
-
             mounted() {
                 this.isLoggedIn = localStorage.getItem('token') !== null;
                 if (localStorage.getItem('token') !== null) {
@@ -274,7 +434,6 @@
                 }
             }
         });
-
     </script>
 </body>
 
