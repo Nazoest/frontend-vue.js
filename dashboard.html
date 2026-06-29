@@ -137,7 +137,7 @@
             methods: {
                 async logout() {
                     localStorage.removeItem("token");
-                    window.location.reload();
+                    window.location.href = 'login.html';
                 },
                 async fetchData() {
                     try {

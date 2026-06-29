@@ -322,7 +322,7 @@
             methods: {
                 async logout() {
                     localStorage.removeItem("token");
-                    window.location.reload();
+                    window.location.href = 'login.html';
                 },
                 async addPurchase() {
                     try {
@@ -332,6 +332,7 @@
                             stock_quantity: this.newPurchase.stock_quantity,
                             created_at: new Date().toISOString()
                         }, headers);
+                        console.log(response.data);
 
                         alert("Purchase Added Successfully");
                         this.message = "Purchase Added Successfully";

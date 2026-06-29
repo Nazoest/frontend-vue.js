@@ -138,7 +138,7 @@
                         const response = await axios.post(
                             'http://127.0.0.1:8000/register',
                             {
-                                username: this.fullname,
+                                fullname: this.username,
                                 email: this.email,
                                 password: this.password
                             }
@@ -153,9 +153,30 @@
                         }, 1500)
 
                     } catch (error) {
-                        console.error(error)
-                        this.message = "Registration failed. Please try again."
-                        this.messageType = "error"
+                        console.error(error);
+                        this.messageType = "error";
+                        
+                        if (!error.response) {
+                            if (error.message === 'Network Error') {
+                                this.message = "Network error. Please check your connection or server status.";
+                            } else {
+                                this.message = "An unexpected error occurred: " + error.message;
+                            }
+                        } else if (error.response.status === 409) {
+                            this.message = error.response.data.detail || "User with this email or username already exists.";
+                        } else if (error.response.status === 422) {
+                            if (Array.isArray(error.response.data.detail)) {
+                                this.message = error.response.data.detail.map(e => e.msg).join(", ");
+                            } else {
+                                this.message = error.response.data.detail || "Validation error. Please check your input.";
+                            }
+                        } else if (error.response.status === 400) {
+                            this.message = error.response.data.detail || "Bad request. Please ensure all fields are correct.";
+                        } else if (error.response.status === 500) {
+                            this.message = "Internal server error. Please try again later.";
+                        } else {
+                            this.message = error.response.data.detail || `Registration failed with status: ${error.response.status}`;
+                        }
                     }
                 }
             }

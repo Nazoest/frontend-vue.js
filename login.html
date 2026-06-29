@@ -62,9 +62,15 @@
 
                 <!-- Submit Button -->
                 <div class="d-grid mb-3">
-                    <button type="submit" class="btn btn-dark rounded-3">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>
-                        Login
+                    <button type="submit" class="btn btn-dark rounded-3" :disabled="isLoading">
+                        <span v-if="!isLoading">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Login
+                        </span>
+                        <span v-else>
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Logging in...
+                        </span>
                     </button>
                 </div>
 
@@ -109,32 +115,169 @@
                 email: '',
                 password: '',
                 message: '',
-                messageType: ''
+                messageType: '',
+                isLoading: false
             },
             methods: {
                 async loginUser() {
+                    // Clear previous messages
+                    this.message = '';
+                    this.messageType = '';
+                    this.isLoading = true;
+
                     try {
                         const response = await axios.post(
                             'http://127.0.0.1:8000/login',
                             {
                                 email: this.email,
                                 password: this.password
+                            },
+                            {
+                                timeout: 10000, // 10 second timeout
+                                withCredentials: true // If using cookies
                             }
                         )
 
-                        localStorage.setItem('token', response.data.access_token)
+                        // Check if response has the expected data
+                        if (response.data && response.data.access_token) {
+                            localStorage.setItem('token', response.data.access_token)
 
-                        this.message = "Login successful"
-                        this.messageType = "success"
+                            this.message = "Login successful! Redirecting..."
+                            this.messageType = "success"
 
-                        setTimeout(() => {
-                            window.location.href = "products.html"
-                        }, 1000)
+                            setTimeout(() => {
+                                window.location.href = "products.html"
+                            }, 1000)
+                        } else {
+                            // Unexpected response format
+                            this.message = "Login failed: Invalid response from server"
+                            this.messageType = "error"
+                            this.isLoading = false
+                        }
 
                     } catch (error) {
-                        console.error(error)
-                        this.message = "Invalid email or password"
+                        this.isLoading = false
+
+                        // Network errors (no response from server)
+                        if (error.code === 'ERR_NETWORK' || !error.response) {
+                            this.message = "Network error: Cannot connect to server. Please check your connection."
+                            this.messageType = "error"
+                            console.error("Network error:", error)
+                            return
+                        }
+
+                        // Timeout errors
+                        if (error.code === 'ECONNABORTED') {
+                            this.message = "Request timeout: Server took too long to respond"
+                            this.messageType = "error"
+                            console.error("Timeout error:", error)
+                            return
+                        }
+
+                        // CORS errors
+                        if (error.message && error.message.includes('CORS')) {
+                            this.message = "CORS error: Server configuration issue. Please contact support."
+                            this.messageType = "error"
+                            console.error("CORS error:", error)
+                            return
+                        }
+
+                        // HTTP Status Code errors (when server responds)
+                        if (error.response) {
+                            const status = error.response.status
+                            const data = error.response.data
+
+                            // 400 Bad Request
+                            if (status === 400) {
+                                this.message = data.detail || "Bad request: Please check your input"
+                                this.messageType = "error"
+                                console.error("Bad request:", error.response)
+                                return
+                            }
+
+                            // 401 Unauthorized - Invalid credentials
+                            if (status === 401) {
+                                this.message = data.detail || "Invalid email or password"
+                                this.messageType = "error"
+                                console.error("Unauthorized:", error.response)
+                                return
+                            }
+
+                            // 403 Forbidden - Account might be locked/disabled
+                            if (status === 403) {
+                                this.message = data.detail || "Access forbidden: Your account may be disabled"
+                                this.messageType = "error"
+                                console.error("Forbidden:", error.response)
+                                return
+                            }
+
+                            // 404 Not Found - Endpoint doesn't exist
+                            if (status === 404) {
+                                this.message = "Login endpoint not found. Please contact support."
+                                this.messageType = "error"
+                                console.error("Not found:", error.response)
+                                return
+                            }
+
+                            // 422 Unprocessable Entity - Validation errors
+                            if (status === 422) {
+                                this.message = data.detail || "Validation error: Please check your input format"
+                                this.messageType = "error"
+                                console.error("Validation error:", error.response)
+                                return
+                            }
+
+                            // 429 Too Many Requests - Rate limiting
+                            if (status === 429) {
+                                this.message = "Too many login attempts. Please try again later."
+                                this.messageType = "error"
+                                console.error("Rate limited:", error.response)
+                                return
+                            }
+
+                            // 500 Internal Server Error
+                            if (status === 500) {
+                                this.message = "Server error: Something went wrong on our end. Please try again later."
+                                this.messageType = "error"
+                                console.error("Server error:", error.response)
+                                return
+                            }
+
+                            // 502 Bad Gateway
+                            if (status === 502) {
+                                this.message = "Bad gateway: Server is temporarily unavailable"
+                                this.messageType = "error"
+                                console.error("Bad gateway:", error.response)
+                                return
+                            }
+
+                            // 503 Service Unavailable
+                            if (status === 503) {
+                                this.message = "Service unavailable: Server is under maintenance"
+                                this.messageType = "error"
+                                console.error("Service unavailable:", error.response)
+                                return
+                            }
+
+                            // 504 Gateway Timeout
+                            if (status === 504) {
+                                this.message = "Gateway timeout: Server took too long to respond"
+                                this.messageType = "error"
+                                console.error("Gateway timeout:", error.response)
+                                return
+                            }
+
+                            // Any other HTTP error
+                            this.message = data.detail || `Error ${status}: ${error.response.statusText}`
+                            this.messageType = "error"
+                            console.error("HTTP error:", error.response)
+                            return
+                        }
+
+                        // Unexpected/unknown errors
+                        this.message = "An unexpected error occurred. Please try again."
                         this.messageType = "error"
+                        console.error("Unexpected error:", error)
                     }
                 }
             }
