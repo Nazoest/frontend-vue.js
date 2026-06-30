@@ -468,7 +468,7 @@
                 async addSale() {
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.post('http://127.0.0.1:8000/sales', {
+                        const response = await axios.post('http://207.154.206.4:8000/sales', {
                             product_id: this.newSale.product_id,
                             quantity: this.newSale.quantity
                         }, headers);
@@ -490,7 +490,7 @@
                 async fetchProducts() {
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.get('http://127.0.0.1:8000/products', headers);
+                        const response = await axios.get('http://207.154.206.4:8000/products', headers);
                         this.products = response.data;
                         console.log(this.products);
                     } catch (error) {
@@ -505,7 +505,7 @@
                 async fetchSales() {
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.get('http://127.0.0.1:8000/sales', headers);
+                        const response = await axios.get('http://207.154.206.4:8000/sales', headers);
 
                         // Destroy DataTable BEFORE Vue re-renders the DOM
                         if (this.table) {
@@ -530,7 +530,7 @@
                 async fetchAllPayments() {
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.get('http://127.0.0.1:8000/payments', headers);
+                        const response = await axios.get('http://207.154.206.4:8000/payments', headers);
                         const payments = response.data;
                         const map = {};
                         payments.forEach(p => {
@@ -562,7 +562,7 @@
                     this.paymentMessage = '';
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.post('http://127.0.0.1:8000/stk-push', {
+                        const response = await axios.post('http://207.154.206.4:8000/stk-push', {
                             sale_id: this.selectedSaleForPayment.id,
                             amount: this.newPayment.amount,
                             phone_number: this.newPayment.phone
@@ -587,7 +587,7 @@
                         attempts++;
                         try {
                             const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                            const res = await axios.get(`http://127.0.0.1:8000/payments?sale_id=${saleId}`, headers);
+                            const res = await axios.get(`http://207.154.206.4:8000/payments?sale_id=${saleId}`, headers);
                             const payment = res.data && res.data.length > 0 ? res.data[0] : null;
 
                             if (payment && payment.status === 'completed') {

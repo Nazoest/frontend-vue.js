@@ -367,7 +367,7 @@
                             timeout: 10000 // 10 second timeout
                         }
 
-                        const response = await axios.post('http://127.0.0.1:8000/products', {
+                        const response = await axios.post('http://207.154.206.4:8000/products', {
                             name: this.newProduct.name,
                             buying_price: this.newProduct.buying_price,
                             selling_price: this.newProduct.selling_price
@@ -541,7 +541,7 @@
                             timeout: 15000 // 15 second timeout for fetching
                         }
 
-                        const response = await axios.get('http://127.0.0.1:8000/products', headers);
+                        const response = await axios.get('http://207.154.206.4:8000/products', headers);
 
                         // Success - check response format
                         if (response.data && Array.isArray(response.data)) {
