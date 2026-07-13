@@ -327,7 +327,7 @@
                 async addPurchase() {
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.post('http://207.154.206.4:8000/purchases', {
+                        const response = await axios.post('http://64.227.125.126:8000/purchases', {
                             product_id: this.newPurchase.product_id,
                             stock_quantity: this.newPurchase.stock_quantity,
                             created_at: new Date().toISOString()
@@ -346,7 +346,7 @@
                 async fetchProducts() {
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.get('http://207.154.206.4:8000/products', headers);
+                        const response = await axios.get('http://64.227.125.126:8000/products', headers);
                         this.products = response.data;
                     } catch (error) {
                         console.error("There was an error fetching products!", error);
@@ -355,7 +355,7 @@
                 async fetchPurchases() {
                     try {
                         const headers = { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } }
-                        const response = await axios.get('http://207.154.206.4:8000/purchases', headers);
+                        const response = await axios.get('http://64.227.125.126:8000/purchases', headers);
                         this.purchases = response.data;
                         this.lastUpdated = new Date().toLocaleTimeString();
                         
